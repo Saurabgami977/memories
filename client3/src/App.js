@@ -40,6 +40,7 @@ function App() {
 						spacing={1}
 						justifyContent="space-between"
 						alignItems="stretch"
+						className={classes.mainContainer}
 					>
 						<Grid item xs={12} sm={7}>
 							<Posts />

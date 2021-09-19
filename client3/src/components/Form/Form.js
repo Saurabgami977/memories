@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 
 import useStyles from "./styles.js";
 import { createPost, updatePost } from "../../store/actions/posts.js";
+import { clearID } from "../../store/actions/edit";
 
 const Form = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const currentID = useSelector((state) => state.edit);
-	const posts = useSelector((state) => state.posts);
+	const post = useSelector((state) =>
+		currentID ? state.posts.find((p) => p._id === currentID) : null,
+	);
 
 	const [postData, setPostData] = useState({
 		creator: "",
@@ -22,17 +25,10 @@ const Form = () => {
 	});
 
 	useEffect(() => {
-		const currentPost = posts?.find((post) => post._id === currentID);
-		if (currentPost) {
-			setPostData({
-				creator: currentPost.creator,
-				title: currentPost.title,
-				message: currentPost.message,
-				tags: currentPost.tags,
-				selectedFile: currentPost.selectedFile,
-			});
+		if (post) {
+			setPostData(post);
 		}
-	}, [posts, currentID]);
+	}, [post]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -42,8 +38,18 @@ const Form = () => {
 		} else {
 			dispatch(createPost(postData));
 		}
+		clear();
 	};
-	const clear = () => {};
+	const clear = () => {
+		dispatch(clearID);
+		setPostData({
+			creator: "",
+			title: "",
+			message: "",
+			tags: "",
+			selectedFile: "",
+		});
+	};
 
 	return (
 		<Paper className={classes.paper}>
@@ -93,7 +99,9 @@ const Form = () => {
 					id="tags"
 					label="Tags"
 					value={postData.tags}
-					onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+					onChange={(e) =>
+						setPostData({ ...postData, tags: e.target.value.split(",") })
+					}
 					fullWidth
 				/>
 				<div className={classes.buttonSubmit}>

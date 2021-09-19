@@ -1,9 +1,11 @@
+import { EDIT, CLEAR } from "../actionTypes";
+
 const reducers = (id = null, action) => {
 	switch (action.type) {
-		case "EDIT":
+		case EDIT:
 			return action.payload;
-		case "Done":
-			return null;
+		case CLEAR:
+			return action.payload;
 		default:
 			return null;
 	}

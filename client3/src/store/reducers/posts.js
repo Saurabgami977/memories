@@ -1,15 +1,21 @@
+import { CREATE, UPDATE, DELETE, LIKEPOST, FETCH } from "../actionTypes";
+
 const reducers = (posts = [], action) => {
 	switch (action.type) {
-		case "UPDATE":
+		case FETCH:
+			return action.payload;
+		case CREATE:
+			return [...posts, action.payload];
+		case UPDATE:
 			return posts.map((post) =>
 				post._id === action.payload._id ? action.payload : post,
 			);
-		case "FETCH":
-			return action.payload;
-		case "CREATE":
-			return [...posts, action.payload];
-		case "DELETE":
-			return posts;
+		case DELETE:
+			return posts.filter((post) => post._id !== action.payload);
+		case LIKEPOST:
+			return posts.map((post) =>
+				post._id === action.payload._id ? action.payload : post,
+			);
 		default:
 			return posts;
 	}
