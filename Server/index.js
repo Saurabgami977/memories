@@ -15,6 +15,10 @@ app.use(cors());
 
 app.use("/posts", postRoutes);
 
+app.get("/", (req, res) => {
+	res.send("Hello to memories API");
+});
+
 const PORT = process.env.PORT;
 
 mongoose
@@ -26,5 +30,3 @@ mongoose
 		app.listen(PORT, () => console.log(`Server running on port ${PORT}`)),
 	)
 	.catch((error) => console.log(error.message));
-
-// mongoose.set("useFindAndModify", false);
