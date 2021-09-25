@@ -11,6 +11,7 @@ import {
 import {
 	MoreHoriz as MoreHorizIcon,
 	ThumbUpAlt as ThumbUpAltIcon,
+	ThumbUpAltOutlined as ThumbUpAltOutlinedIcon,
 	Delete as DeleteIcon,
 } from "@material-ui/icons";
 import moment from "moment";
@@ -24,9 +25,40 @@ import { deletePost, likePost } from "../../../store/actions/posts";
 const Post = ({ post }) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
+	const loggedInUser = JSON.parse(localStorage.getItem("profile"));
 
 	const editPost = (id) => {
 		dispatch(setID(id));
+	};
+
+	const Likes = () => {
+		if (post.likes.length > 0) {
+			return post.likes.find(
+				(like) =>
+					like ===
+					(loggedInUser?.result?.googleId || loggedInUser?.result?._id),
+			) ? (
+				<>
+					<ThumbUpAltIcon fontSize="small" />
+					&nbsp;
+					{post.likes.length > 2
+						? `You and ${post.likes.length - 1} others`
+						: `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+				</>
+			) : (
+				<>
+					<ThumbUpAltOutlinedIcon fontSize="small" />
+					&nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+				</>
+			);
+		}
+
+		return (
+			<>
+				<ThumbUpAltOutlinedIcon fontSize="small" />
+				&nbsp;Like
+			</>
+		);
 	};
 
 	return (
@@ -38,21 +70,24 @@ const Post = ({ post }) => {
 			/>
 			<div className={classes.overlay}>
 				<Typography variant="h6" color="initial">
-					{post.creator}
+					{post.name}
 				</Typography>
 				<Typography variant="body2" color="initial">
 					{moment(post.createdAt).fromNow()}
 				</Typography>
 			</div>
-			<div className={classes.overlay2}>
-				<Button
-					style={{ color: "white" }}
-					size="small"
-					onClick={() => editPost(post._id)}
-				>
-					<MoreHorizIcon fontSize="default" />
-				</Button>
-			</div>
+			{(post.creator === loggedInUser.result._id ||
+				loggedInUser.result.googleId === post.creator) && (
+				<div className={classes.overlay2}>
+					<Button
+						style={{ color: "white" }}
+						size="small"
+						onClick={() => editPost(post._id)}
+					>
+						<MoreHorizIcon fontSize="medium" />
+					</Button>
+				</div>
+			)}
 			<div className={classes.details}>
 				<Typography variant="body2" color="textSecondary">
 					{post.tags.map((tag) => `#${tag} `)}
@@ -74,19 +109,21 @@ const Post = ({ post }) => {
 						dispatch(likePost(post._id));
 					}}
 				>
-					<ThumbUpAltIcon fontSize="small" /> &nbsp; Like &nbsp;
-					{post.likeCount}
+					<Likes />
 				</Button>
-				<Button
-					size="small"
-					color="primary"
-					onClick={() => {
-						dispatch(deletePost(post._id));
-					}}
-				>
-					<DeleteIcon fontSize="small" />
-					Delete
-				</Button>
+				{(post.creator === loggedInUser.result._id ||
+					loggedInUser.result.googleId === post.creator) && (
+					<Button
+						size="small"
+						color="primary"
+						onClick={() => {
+							dispatch(deletePost(post._id));
+						}}
+					>
+						<DeleteIcon fontSize="small" />
+						Delete
+					</Button>
+				)}
 			</CardActions>
 		</Card>
 	);

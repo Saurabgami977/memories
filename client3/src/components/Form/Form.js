@@ -12,12 +12,13 @@ const Form = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const currentID = useSelector((state) => state.edit);
+	const user = JSON.parse(localStorage.getItem("profile"));
+
 	const post = useSelector((state) =>
 		currentID ? state.posts.find((p) => p._id === currentID) : null,
 	);
 
 	const [postData, setPostData] = useState({
-		creator: "",
 		title: "",
 		message: "",
 		tags: "",
@@ -33,23 +34,33 @@ const Form = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (currentID) {
-			dispatch(updatePost(currentID, postData));
-			console.log(postData);
+			dispatch(
+				updatePost(currentID, { ...postData, name: user?.result?.name }),
+			);
 		} else {
-			dispatch(createPost(postData));
+			dispatch(createPost({ ...postData, name: user?.result?.name }));
 		}
 		clear();
 	};
 	const clear = () => {
 		dispatch(clearID);
 		setPostData({
-			creator: "",
 			title: "",
 			message: "",
 			tags: "",
 			selectedFile: "",
 		});
 	};
+
+	if (!user?.result?.name) {
+		return (
+			<Paper className={classes.paper}>
+				<Typography variant="h6" align="center">
+					Please Sign In to create your own memories and like other's memories
+				</Typography>
+			</Paper>
+		);
+	}
 
 	return (
 		<Paper className={classes.paper}>
@@ -62,17 +73,6 @@ const Form = () => {
 				<Typography variant="h6" color="inherit">
 					{currentID ? "Editing" : "Creating"} a Memory
 				</Typography>
-				<TextField
-					variant="outlined"
-					name="creator"
-					id="creator"
-					label="Creator"
-					value={postData.creator}
-					onChange={(e) =>
-						setPostData({ ...postData, creator: e.target.value })
-					}
-					fullWidth
-				/>
 				<TextField
 					variant="outlined"
 					name="title"

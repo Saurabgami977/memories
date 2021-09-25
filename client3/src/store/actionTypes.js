@@ -6,3 +6,6 @@ export const LIKEPOST = "LIKEPOST";
 
 export const EDIT = "EDIT";
 export const CLEAR = "CLEAR";
+
+export const AUTH = "AUTH";
+export const LOGOUT = "LOGOUT";
