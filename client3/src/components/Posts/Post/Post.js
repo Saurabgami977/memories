@@ -62,7 +62,7 @@ const Post = ({ post }) => {
 	};
 
 	return (
-		<Card className={classes.card} key={post.id}>
+		<Card className={classes.card} key={post.id} raised elevation={6}>
 			<CardMedia
 				className={classes.media}
 				title={post.title}
@@ -76,8 +76,8 @@ const Post = ({ post }) => {
 					{moment(post.createdAt).fromNow()}
 				</Typography>
 			</div>
-			{(post.creator === loggedInUser.result._id ||
-				loggedInUser.result.googleId === post.creator) && (
+			{(post.creator === loggedInUser?.result._id ||
+				loggedInUser?.result.googleId === post.creator) && (
 				<div className={classes.overlay2}>
 					<Button
 						style={{ color: "white" }}
@@ -103,6 +103,7 @@ const Post = ({ post }) => {
 			</CardContent>
 			<CardActions className={classes.cardActions}>
 				<Button
+					disabled={!loggedInUser}
 					size="small"
 					color="primary"
 					onClick={() => {
@@ -111,8 +112,8 @@ const Post = ({ post }) => {
 				>
 					<Likes />
 				</Button>
-				{(post.creator === loggedInUser.result._id ||
-					loggedInUser.result.googleId === post.creator) && (
+				{(post.creator === loggedInUser?.result._id ||
+					loggedInUser?.result.googleId === post.creator) && (
 					<Button
 						size="small"
 						color="primary"

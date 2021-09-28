@@ -8,8 +8,8 @@ import useStyles from "./styles.js";
 
 const Posts = () => {
 	const classes = useStyles();
-	const posts = useSelector((state) => state.posts);
-	return !posts ? (
+	const { posts } = useSelector((state) => state.posts);
+	return !posts?.length ? (
 		<CircularProgress color="secondary" />
 	) : (
 		<Grid
@@ -19,7 +19,7 @@ const Posts = () => {
 			spacing={3}
 		>
 			{posts.map((post) => (
-				<Grid key={post._id} item xs={12} sm={6}>
+				<Grid key={post._id} item xs={12} sm={6} lg={3}>
 					<Post post={post} key={post.id} />
 				</Grid>
 			))}
