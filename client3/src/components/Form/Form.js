@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Paper, Typography, TextField, Button } from "@material-ui/core";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 
 import useStyles from "./styles.js";
 import { createPost, updatePost } from "../../store/actions/posts.js";
@@ -13,6 +14,7 @@ const Form = () => {
 	const dispatch = useDispatch();
 	const currentID = useSelector((state) => state.edit);
 	const user = JSON.parse(localStorage.getItem("profile"));
+	const history = useHistory();
 
 	const post = useSelector((state) =>
 		currentID ? state.posts.find((p) => p._id === currentID) : null,
@@ -38,7 +40,7 @@ const Form = () => {
 				updatePost(currentID, { ...postData, name: user?.result?.name }),
 			);
 		} else {
-			dispatch(createPost({ ...postData, name: user?.result?.name }));
+			dispatch(createPost({ ...postData, name: user?.result?.name }, history));
 		}
 		clear();
 	};
@@ -63,7 +65,7 @@ const Form = () => {
 	}
 
 	return (
-		<Paper className={classes.paper}>
+		<Paper className={classes.paper} elevation={6}>
 			<form
 				onSubmit={handleSubmit}
 				autoComplete="off"

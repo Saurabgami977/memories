@@ -48,7 +48,6 @@ const Auth = () => {
 	};
 
 	const handleChange = (e) => {
-		console.log(e.target.value);
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
@@ -61,7 +60,6 @@ const Auth = () => {
 	const googleSuccess = async (res) => {
 		const result = res?.profileObj;
 		const token = res?.tokenId;
-		console.log(result, token);
 		try {
 			dispatch({ type: AUTH, payload: { result, token } });
 			history.push("/");
